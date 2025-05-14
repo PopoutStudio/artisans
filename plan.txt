@@ -1,0 +1,104 @@
+# Plan de Développement Artisans - Approche MVP Incrémentale
+
+## MVP 1: Profil Artisan Basique (3-4 jours)
+Objectif: Permettre à un artisan de créer son profil minimal
+- [ ] Setup initial minimal
+  - [ ] Next.js + TypeScript
+  - [ ] Tailwind CSS
+  - [ ] PostgreSQL + Prisma (uniquement modèle User/Artisan)
+- [ ] Modèles de données minimaux
+  - [ ] User (email, password)
+  - [ ] Artisan (nom, description, services basiques)
+- [ ] Pages
+  - [ ] Inscription/Connexion simple
+  - [ ] Page profil basique (CRUD)
+  - [ ] Liste des artisans (admin)
+
+## MVP 2: Recherche Simple (2-3 jours)
+Objectif: Permettre aux clients de trouver des artisans
+- [ ] Extension des modèles
+  - [ ] Ajout localisation (commune)
+  - [ ] Ajout services (liste simple)
+- [ ] Pages
+  - [ ] Page de recherche (par service + commune)
+  - [ ] Page de détail artisan
+- [ ] Fonctionnalités
+  - [ ] Recherche basique (filtre service + commune)
+  - [ ] Affichage liste résultats
+
+## MVP 3: Contact Initial (2-3 jours)
+Objectif: Permettre le premier contact entre client et artisan
+- [ ] Extension des modèles
+  - [ ] Message (expéditeur, destinataire, contenu)
+  - [ ] Client (email, password)
+- [ ] Pages
+  - [ ] Inscription client
+  - [ ] Formulaire de contact
+  - [ ] Boîte de réception basique
+- [ ] Fonctionnalités
+  - [ ] Envoi message simple
+  - [ ] Affichage messages reçus
+
+## MVP 4: Anonymisation Basique (2 jours)
+Objectif: Protéger les coordonnées des artisans
+- [ ] Extension des modèles
+  - [ ] Ajout coordonnées masquées
+- [ ] Fonctionnalités
+  - [ ] Masquage email/téléphone
+  - [ ] Système de "dévoilement" après X messages
+
+## MVP 5: Système de Leads (2-3 jours)
+Objectif: Gérer les contacts et limiter l'accès
+- [ ] Extension des modèles
+  - [ ] Lead (artisan, client, date, statut)
+- [ ] Pages
+  - [ ] Dashboard artisan (compteur leads)
+  - [ ] Page gestion leads
+- [ ] Fonctionnalités
+  - [ ] Compteur de leads gratuits
+  - [ ] Blocage après limite atteinte
+
+## MVP 6: Abonnement Simple (3-4 jours)
+Objectif: Permettre aux artisans de débloquer plus de leads
+- [ ] Extension des modèles
+  - [ ] Abonnement (type, date début/fin)
+- [ ] Intégration
+  - [ ] Stripe (paiement simple)
+- [ ] Pages
+  - [ ] Page abonnement
+  - [ ] Gestion abonnement
+- [ ] Fonctionnalités
+  - [ ] Un niveau d'abonnement
+  - [ ] Paiement simple
+  - [ ] Déblocage leads
+
+## Notes Techniques (MVP)
+- Stack: Next.js 14+ (App Router)
+- TypeScript
+- Tailwind CSS
+- PostgreSQL + Prisma
+- NextAuth.js (authentification basique)
+- Vercel (déploiement)
+- Stripe (paiements simples)
+
+## Critères de Succès MVP
+- Un artisan peut créer son profil
+- Un client peut trouver un artisan
+- Un client peut contacter un artisan
+- Un artisan peut gérer ses leads
+- Un artisan peut souscrire à un abonnement
+
+## Prochaines Étapes (Post-MVP)
+- Système de notation
+- Messagerie avancée
+- Géolocalisation précise
+- Multiples niveaux d'abonnement
+- Système de réservation
+- PWA
+
+## Points d'Attention MVP
+- Simplicité d'utilisation
+- Performance basique
+- Sécurité essentielle
+- Conformité RGPD minimale
+- Support desktop-first 
