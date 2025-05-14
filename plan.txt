@@ -16,15 +16,19 @@ Objectif: Permettre à un artisan de créer son profil minimal
 
 ## MVP 2: Recherche Simple (2-3 jours)
 Objectif: Permettre aux clients de trouver des artisans
-- [ ] Extension des modèles
-  - [ ] Ajout localisation (commune)
-  - [ ] Ajout services (liste simple)
-- [ ] Pages
-  - [ ] Page de recherche (par service + commune)
-  - [ ] Page de détail artisan
-- [ ] Fonctionnalités
-  - [ ] Recherche basique (filtre service + commune)
-  - [ ] Affichage liste résultats
+- [x] Extension des modèles
+  - [x] Ajout localisation (commune)
+  - [x] Ajout services (liste simple)
+- [x] Pages
+  - [x] Page de recherche (par service + commune)
+  - [x] Page de détail artisan
+- [x] Fonctionnalités
+  - [x] Recherche basique (filtre service + commune)
+  - [x] Affichage liste résultats
+- [ ] Améliorations possibles
+  - [ ] Pagination des résultats
+  - [ ] Filtres supplémentaires (code postal, rayon)
+  - [ ] Tri des résultats
 
 ## MVP 3: Contact Initial (2-3 jours)
 Objectif: Permettre le premier contact entre client et artisan
@@ -83,7 +87,7 @@ Objectif: Permettre aux artisans de débloquer plus de leads
 
 ## Critères de Succès MVP
 - [x] Un artisan peut créer son profil
-- [ ] Un client peut trouver un artisan
+- [x] Un client peut trouver un artisan
 - [ ] Un client peut contacter un artisan
 - [ ] Un artisan peut gérer ses leads
 - [ ] Un artisan peut souscrire à un abonnement
@@ -104,8 +108,10 @@ Objectif: Permettre aux artisans de débloquer plus de leads
 - Support desktop-first ✓
 
 ## Statut Actuel
-MVP 1 presque terminé :
+MVP 2 terminé :
 - ✓ Configuration initiale complète
 - ✓ Authentification fonctionnelle
 - ✓ CRUD profil artisan
-- ⏳ Liste des artisans (admin) à implémenter 
+- ✓ Recherche d'artisans
+- ✓ Affichage détaillé des profils
+- ⏳ MVP 3 à démarrer (système de contact) 
