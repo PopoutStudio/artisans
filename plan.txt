@@ -2,16 +2,16 @@
 
 ## MVP 1: Profil Artisan Basique (3-4 jours)
 Objectif: Permettre à un artisan de créer son profil minimal
-- [ ] Setup initial minimal
-  - [ ] Next.js + TypeScript
-  - [ ] Tailwind CSS
-  - [ ] PostgreSQL + Prisma (uniquement modèle User/Artisan)
-- [ ] Modèles de données minimaux
-  - [ ] User (email, password)
-  - [ ] Artisan (nom, description, services basiques)
-- [ ] Pages
-  - [ ] Inscription/Connexion simple
-  - [ ] Page profil basique (CRUD)
+- [x] Setup initial minimal
+  - [x] Next.js + TypeScript
+  - [x] Tailwind CSS
+  - [x] PostgreSQL + Prisma (uniquement modèle User/Artisan)
+- [x] Modèles de données minimaux
+  - [x] User (email, password)
+  - [x] Artisan (nom, description, services basiques)
+- [x] Pages
+  - [x] Inscription/Connexion simple
+  - [x] Page profil basique (CRUD)
   - [ ] Liste des artisans (admin)
 
 ## MVP 2: Recherche Simple (2-3 jours)
@@ -73,20 +73,20 @@ Objectif: Permettre aux artisans de débloquer plus de leads
   - [ ] Déblocage leads
 
 ## Notes Techniques (MVP)
-- Stack: Next.js 14+ (App Router)
-- TypeScript
-- Tailwind CSS
-- PostgreSQL + Prisma
-- NextAuth.js (authentification basique)
+- Stack: Next.js 14+ (App Router) ✓
+- TypeScript ✓
+- Tailwind CSS ✓
+- PostgreSQL + Prisma ✓
+- NextAuth.js (authentification basique) ✓
 - Vercel (déploiement)
 - Stripe (paiements simples)
 
 ## Critères de Succès MVP
-- Un artisan peut créer son profil
-- Un client peut trouver un artisan
-- Un client peut contacter un artisan
-- Un artisan peut gérer ses leads
-- Un artisan peut souscrire à un abonnement
+- [x] Un artisan peut créer son profil
+- [ ] Un client peut trouver un artisan
+- [ ] Un client peut contacter un artisan
+- [ ] Un artisan peut gérer ses leads
+- [ ] Un artisan peut souscrire à un abonnement
 
 ## Prochaines Étapes (Post-MVP)
 - Système de notation
@@ -97,8 +97,15 @@ Objectif: Permettre aux artisans de débloquer plus de leads
 - PWA
 
 ## Points d'Attention MVP
-- Simplicité d'utilisation
-- Performance basique
-- Sécurité essentielle
+- Simplicité d'utilisation ✓
+- Performance basique ✓
+- Sécurité essentielle ✓
 - Conformité RGPD minimale
-- Support desktop-first 
+- Support desktop-first ✓
+
+## Statut Actuel
+MVP 1 presque terminé :
+- ✓ Configuration initiale complète
+- ✓ Authentification fonctionnelle
+- ✓ CRUD profil artisan
+- ⏳ Liste des artisans (admin) à implémenter 
