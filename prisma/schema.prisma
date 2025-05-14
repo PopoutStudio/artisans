@@ -31,6 +31,9 @@ model Artisan {
   name        String
   description String?
   services    String[]  // Liste simple des services pour MVP 1
+  commune     String?   // Commune d'intervention
+  codePostal  String?   // Code postal
+  rayon       Int       @default(10) // Rayon d'intervention en km
   createdAt   DateTime  @default(now())
   updatedAt   DateTime  @updatedAt
 }
