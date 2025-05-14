@@ -1,5 +1,6 @@
 'use client';
 
+import { signIn } from 'next-auth/react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -23,18 +24,44 @@ export function AuthForm({ type }: AuthFormProps) {
     const name = formData.get('name') as string;
 
     try {
-      const response = await fetch(`/api/auth/${type}`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ email, password, name }),
-      });
+      if (type === 'register') {
+        const response = await fetch('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password, name }),
+        });
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Une erreur est survenue');
+        if (!response.ok) {
+          const data = await response.json();
+          throw new Error(data.message || 'Une erreur est survenue');
+        }
+
+        // Après l'inscription, connecter l'utilisateur
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          throw new Error(result.error);
+        }
+
+        router.push('/profile');
+      } else {
+        // Login
+        const result = await signIn('credentials', {
+          email,
+          password,
+          redirect: false,
+        });
+
+        if (result?.error) {
+          throw new Error(result.error);
+        }
+
+        router.push('/profile');
       }
-
-      router.push(type === 'login' ? '/dashboard' : '/profile');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Une erreur est survenue');
     } finally {
