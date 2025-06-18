@@ -14,15 +14,7 @@ export async function GET() {
             );
         }
 
-        // Seuls les artisans peuvent voir le nombre de messages non lus
-        if (session.user.role !== 'ARTISAN') {
-            return NextResponse.json(
-                { message: 'Non autorisé' },
-                { status: 403 },
-            );
-        }
-
-        // Compter les messages non lus reçus par l'artisan
+        // Compter les messages non lus reçus par l'utilisateur
         const count = await prisma.message.count({
             where: {
                 receiverId: session.user.id,

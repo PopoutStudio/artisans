@@ -14,14 +14,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifier que l'utilisateur est un artisan
-        if (session.user.role !== 'ARTISAN') {
-            return NextResponse.json(
-                { message: 'Seuls les artisans peuvent répondre aux messages' },
-                { status: 403 },
-            );
-        }
-
         const { originalMessageId, content } = await req.json();
 
         if (!originalMessageId || !content) {
@@ -46,7 +38,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifier que l'artisan est bien le destinataire du message original
+        // Vérifier que l'utilisateur est bien le destinataire du message original
         if (originalMessage.receiverId !== session.user.id) {
             return NextResponse.json(
                 { message: 'Non autorisé à répondre à ce message' },
@@ -54,22 +46,22 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifier que l'expéditeur du message original est un client
-        if (originalMessage.sender.role !== 'CLIENT') {
+        // Vérifier que l'expéditeur et le destinataire ont des rôles différents
+        if (originalMessage.sender.role === session.user.role) {
             return NextResponse.json(
                 {
                     message:
-                        "Vous ne pouvez répondre qu'aux messages de clients",
+                        "Vous ne pouvez répondre qu'aux messages d'utilisateurs ayant un rôle différent",
                 },
                 { status: 400 },
             );
         }
 
-        // Créer la réponse (l'artisan devient l'expéditeur, le client devient le destinataire)
+        // Créer la réponse (l'utilisateur actuel devient l'expéditeur, l'expéditeur original devient le destinataire)
         const reply = await prisma.message.create({
             data: {
-                senderId: session.user.id, // L'artisan répond
-                receiverId: originalMessage.senderId, // Le client reçoit la réponse
+                senderId: session.user.id, // L'utilisateur actuel répond
+                receiverId: originalMessage.senderId, // L'expéditeur original reçoit la réponse
                 content: content.trim(),
             },
         });

@@ -37,9 +37,9 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
     const [replyContent, setReplyContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
 
-    // Marquer automatiquement les messages comme lus pour les artisans
+    // Marquer automatiquement les messages comme lus pour tous les utilisateurs
     useEffect(() => {
-        if (userRole === 'ARTISAN' && session?.user?.id) {
+        if (session?.user?.id) {
             const unreadMessages = messages.filter(
                 (msg) => !msg.isRead && msg.receiverId === session.user.id,
             );
@@ -57,7 +57,7 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
                 }
             });
         }
-    }, [messages, userRole, session?.user?.id]);
+    }, [messages, session?.user?.id]);
 
     const handleReply = async (messageId: string) => {
         if (!replyContent.trim()) return;
@@ -167,7 +167,8 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
                                 </div>
                             </div>
                             <div className='flex items-center space-x-2'>
-                                {userRole === 'ARTISAN' && isReceivedByMe && (
+                                {/* Bouton Répondre pour les artisans ET les clients */}
+                                {isReceivedByMe && (
                                     <button
                                         onClick={() =>
                                             setReplyingTo(
@@ -192,48 +193,43 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
                             </p>
                         </div>
 
-                        {/* Formulaire de réponse pour les artisans */}
-                        {userRole === 'ARTISAN' &&
-                            isReceivedByMe &&
-                            replyingTo === message.id && (
-                                <div className='mt-4 pt-4 border-t border-gray-200'>
-                                    <textarea
-                                        value={replyContent}
-                                        onChange={(e) =>
-                                            setReplyContent(e.target.value)
+                        {/* Formulaire de réponse pour tous les utilisateurs */}
+                        {isReceivedByMe && replyingTo === message.id && (
+                            <div className='mt-4 pt-4 border-t border-gray-200'>
+                                <textarea
+                                    value={replyContent}
+                                    onChange={(e) =>
+                                        setReplyContent(e.target.value)
+                                    }
+                                    placeholder='Tapez votre réponse...'
+                                    className='w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+                                    rows={3}
+                                />
+                                <div className='mt-3 flex justify-end space-x-2'>
+                                    <button
+                                        onClick={() => {
+                                            setReplyingTo(null);
+                                            setReplyContent('');
+                                        }}
+                                        className='px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium'
+                                        disabled={isSubmitting}
+                                    >
+                                        Annuler
+                                    </button>
+                                    <button
+                                        onClick={() => handleReply(message.id)}
+                                        disabled={
+                                            !replyContent.trim() || isSubmitting
                                         }
-                                        placeholder='Tapez votre réponse...'
-                                        className='w-full p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-                                        rows={3}
-                                    />
-                                    <div className='mt-3 flex justify-end space-x-2'>
-                                        <button
-                                            onClick={() => {
-                                                setReplyingTo(null);
-                                                setReplyContent('');
-                                            }}
-                                            className='px-4 py-2 text-gray-600 hover:text-gray-800 text-sm font-medium'
-                                            disabled={isSubmitting}
-                                        >
-                                            Annuler
-                                        </button>
-                                        <button
-                                            onClick={() =>
-                                                handleReply(message.id)
-                                            }
-                                            disabled={
-                                                !replyContent.trim() ||
-                                                isSubmitting
-                                            }
-                                            className='px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
-                                        >
-                                            {isSubmitting
-                                                ? 'Envoi...'
-                                                : 'Envoyer la réponse'}
-                                        </button>
-                                    </div>
+                                        className='px-4 py-2 bg-blue-600 text-white rounded-md text-sm font-medium hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed'
+                                    >
+                                        {isSubmitting
+                                            ? 'Envoi...'
+                                            : 'Envoyer la réponse'}
+                                    </button>
                                 </div>
-                            )}
+                            </div>
+                        )}
                     </div>
                 );
             })}

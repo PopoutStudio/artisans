@@ -12,9 +12,9 @@ export function Navbar() {
 
     const isActive = (path: string) => pathname === path;
 
-    // Récupérer le nombre de messages non lus pour les artisans
+    // Récupérer le nombre de messages non lus pour tous les utilisateurs connectés
     useEffect(() => {
-        if (session?.user?.role === 'ARTISAN') {
+        if (session?.user?.id) {
             const fetchUnreadCount = async () => {
                 try {
                     const response = await fetch('/api/messages/unread-count');
@@ -35,7 +35,7 @@ export function Navbar() {
             const interval = setInterval(fetchUnreadCount, 30000);
             return () => clearInterval(interval);
         }
-    }, [session?.user?.role]);
+    }, [session?.user?.id]);
 
     return (
         <nav className='bg-white shadow-lg'>
@@ -97,13 +97,20 @@ export function Navbar() {
                                     {session.user.role === 'CLIENT' && (
                                         <Link
                                             href='/messages'
-                                            className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                                            className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium relative ${
                                                 isActive('/messages')
                                                     ? 'border-blue-500 text-gray-900'
                                                     : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
                                             }`}
                                         >
                                             Mes Messages
+                                            {unreadCount > 0 && (
+                                                <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center'>
+                                                    {unreadCount > 9
+                                                        ? '9+'
+                                                        : unreadCount}
+                                                </span>
+                                            )}
                                         </Link>
                                     )}
                                 </>
