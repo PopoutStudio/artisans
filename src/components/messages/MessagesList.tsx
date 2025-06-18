@@ -92,36 +92,6 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
         }
     };
 
-    // Grouper les messages par conversation
-    const groupMessagesByConversation = (messages: Message[]) => {
-        const conversations: { [key: string]: Message[] } = {};
-
-        messages.forEach((message) => {
-            // Créer une clé unique pour chaque conversation
-            const otherUserId =
-                message.senderId === 'currentUserId'
-                    ? message.receiverId
-                    : message.senderId;
-            const conversationKey = otherUserId;
-
-            if (!conversations[conversationKey]) {
-                conversations[conversationKey] = [];
-            }
-            conversations[conversationKey].push(message);
-        });
-
-        // Trier les messages dans chaque conversation par date
-        Object.keys(conversations).forEach((key) => {
-            conversations[key].sort(
-                (a, b) =>
-                    new Date(a.createdAt).getTime() -
-                    new Date(b.createdAt).getTime(),
-            );
-        });
-
-        return conversations;
-    };
-
     if (messages.length === 0) {
         return (
             <div className='text-center py-12'>
@@ -140,7 +110,6 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
         );
     }
 
-    // Pour l'affichage simple, on garde l'ordre chronologique
     return (
         <div className='space-y-4'>
             {messages.map((message) => {

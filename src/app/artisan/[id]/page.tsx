@@ -89,7 +89,7 @@ export default async function ArtisanPage({ params }: ArtisanPageProps) {
 
                     <div className='mt-8 pt-6 border-t border-gray-200'>
                         <ContactForm
-                            artisanId={artisan.userId}
+                            artisanId={artisan.id}
                             artisanName={artisan.name}
                         />
                     </div>

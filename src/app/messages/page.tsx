@@ -9,8 +9,13 @@ interface MessageWithRelations {
     content: string;
     isRead: boolean;
     createdAt: Date;
+    senderId: string;
+    receiverId: string;
     sender?: {
         email: string;
+        artisan?: {
+            name: string;
+        };
     };
     receiver?: {
         email: string;
