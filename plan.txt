@@ -41,7 +41,7 @@ Objectif: Permettre le premier contact entre client et artisan
   - [x] Client (email, password)
 - [x] Pages
   - [x] Inscription client
-  - [ ] Formulaire de contact
+  - [x] Formulaire de contact
   - [ ] Boîte de réception basique
 - [ ] Fonctionnalités
   - [ ] Envoi message simple

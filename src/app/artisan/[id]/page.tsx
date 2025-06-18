@@ -1,4 +1,4 @@
-import { ContactButton } from '@/components/artisan/ContactButton';
+import { ContactForm } from '@/components/artisan/ContactForm';
 import { prisma } from '@/lib/prisma';
 import { notFound } from 'next/navigation';
 
@@ -88,7 +88,10 @@ export default async function ArtisanPage({ params }: ArtisanPageProps) {
                     )}
 
                     <div className='mt-8 pt-6 border-t border-gray-200'>
-                        <ContactButton />
+                        <ContactForm
+                            artisanId={artisan.userId}
+                            artisanName={artisan.name}
+                        />
                     </div>
                 </div>
             </div>
