@@ -36,11 +36,11 @@ Objectif: Permettre aux clients de trouver des artisans
 
 ## MVP 3: Contact Initial (2-3 jours)
 Objectif: Permettre le premier contact entre client et artisan
-- [ ] Extension des modèles
-  - [ ] Message (expéditeur, destinataire, contenu)
-  - [ ] Client (email, password)
-- [ ] Pages
-  - [ ] Inscription client
+- [x] Extension des modèles
+  - [x] Message (expéditeur, destinataire, contenu)
+  - [x] Client (email, password)
+- [x] Pages
+  - [x] Inscription client
   - [ ] Formulaire de contact
   - [ ] Boîte de réception basique
 - [ ] Fonctionnalités
