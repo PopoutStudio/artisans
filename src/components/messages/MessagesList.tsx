@@ -36,19 +36,25 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
     const [replyingTo, setReplyingTo] = useState<string | null>(null);
     const [replyContent, setReplyContent] = useState('');
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [markedAsRead, setMarkedAsRead] = useState<Set<string>>(new Set());
 
-    // Marquer automatiquement les messages comme lus pour tous les utilisateurs
+    // Marquer automatiquement les messages reçus comme lus
     useEffect(() => {
         if (session?.user?.id) {
-            const unreadMessages = messages.filter(
-                (msg) => !msg.isRead && msg.receiverId === session.user.id,
+            const unreadReceivedMessages = messages.filter(
+                (msg) =>
+                    !msg.isRead &&
+                    msg.receiverId === session.user.id &&
+                    !markedAsRead.has(msg.id),
             );
 
-            unreadMessages.forEach(async (message) => {
+            unreadReceivedMessages.forEach(async (message) => {
                 try {
                     await fetch(`/api/messages/${message.id}/read`, {
                         method: 'PUT',
                     });
+                    // Marquer comme traité pour éviter les appels multiples
+                    setMarkedAsRead((prev) => new Set(prev).add(message.id));
                 } catch (error) {
                     console.error(
                         'Erreur lors du marquage du message comme lu:',
@@ -57,7 +63,7 @@ export function MessagesList({ messages, userRole }: MessagesListProps) {
                 }
             });
         }
-    }, [messages, session?.user?.id]);
+    }, [messages, session?.user?.id, markedAsRead]);
 
     const handleReply = async (messageId: string) => {
         if (!replyContent.trim()) return;
