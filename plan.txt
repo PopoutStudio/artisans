@@ -29,6 +29,8 @@ Objectif: Permettre aux clients de trouver des artisans
   - [x] Services restreints aux valeurs prédéfinies
   - [x] Validation côté serveur des services
   - [x] Interface utilisateur améliorée (checkboxes)
+  - [x] Ajout commune et code postal au profil artisan
+  - [x] Filtrage par commune fonctionnel
   - [ ] Pagination des résultats
   - [ ] Filtres supplémentaires (code postal, rayon)
   - [ ] Tri des résultats
@@ -122,8 +124,9 @@ MVP 2 terminé :
 
 ## Fichiers Pertinents
 - `src/lib/constants.ts` - Fichier de constantes partagées contenant la liste des services prédéfinis
-- `src/components/profile/ProfileForm.tsx` - Formulaire de profil mis à jour avec sélection de services par checkboxes
+- `src/components/profile/ProfileForm.tsx` - Formulaire de profil mis à jour avec sélection de services par checkboxes et champs commune/code postal
 - `src/components/search/SearchForm.tsx` - Formulaire de recherche mis à jour pour utiliser les constantes partagées
-- `src/app/api/profile/route.ts` - API de profil mise à jour avec validation des services côté serveur
+- `src/app/api/profile/route.ts` - API de profil mise à jour avec validation des services côté serveur et gestion commune/code postal
+- `src/app/profile/page.tsx` - Page profil mise à jour pour inclure les données de localisation
 - `src/app/search/page.tsx` - Page de recherche corrigée pour compatibilité Next.js 15 (await searchParams)
 - `src/app/artisan/[id]/page.tsx` - Page détail artisan corrigée pour compatibilité Next.js 15 (await params) 
