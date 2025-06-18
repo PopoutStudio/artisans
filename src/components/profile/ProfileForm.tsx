@@ -1,6 +1,6 @@
 'use client';
 
-import { SERVICES } from '@/lib/constants';
+import { COMMUNES, SERVICES } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
@@ -107,14 +107,19 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                     >
                         Commune
                     </label>
-                    <input
-                        type='text'
+                    <select
                         name='commune'
                         id='commune'
                         defaultValue={initialData.commune || ''}
-                        placeholder='Ex: Paris, Lyon, Marseille'
                         className='mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500'
-                    />
+                    >
+                        <option value=''>Sélectionnez une commune</option>
+                        {COMMUNES.map((commune) => (
+                            <option key={commune} value={commune}>
+                                {commune}
+                            </option>
+                        ))}
+                    </select>
                 </div>
 
                 <div>
@@ -129,7 +134,7 @@ export function ProfileForm({ initialData }: ProfileFormProps) {
                         name='codePostal'
                         id='codePostal'
                         defaultValue={initialData.codePostal || ''}
-                        placeholder='Ex: 75001'
+                        placeholder='Ex: 97200'
                         className='mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500'
                     />
                 </div>

@@ -1,4 +1,4 @@
-import { SERVICES, Service } from '@/lib/constants';
+import { COMMUNES, Commune, SERVICES, Service } from '@/lib/constants';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { NextResponse } from 'next/server';
@@ -40,6 +40,16 @@ export async function PUT(req: Request) {
                     { status: 400 },
                 );
             }
+        }
+
+        // Validation de la commune
+        if (commune && !COMMUNES.includes(commune as Commune)) {
+            return NextResponse.json(
+                {
+                    message: `Commune invalide: ${commune}`,
+                },
+                { status: 400 },
+            );
         }
 
         const artisan = await prisma.artisan.update({
