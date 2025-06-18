@@ -42,7 +42,7 @@ Objectif: Permettre le premier contact entre client et artisan
 - [x] Pages
   - [x] Inscription client
   - [x] Formulaire de contact
-  - [ ] Boîte de réception basique
+  - [x] Boîte de réception basique
 - [ ] Fonctionnalités
   - [ ] Envoi message simple
   - [ ] Affichage messages reçus
