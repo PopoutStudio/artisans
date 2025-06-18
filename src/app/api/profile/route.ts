@@ -15,8 +15,7 @@ export async function PUT(req: Request) {
             );
         }
 
-        const { name, description, services, commune, codePostal } =
-            await req.json();
+        const { name, description, services, commune } = await req.json();
 
         if (!name) {
             return NextResponse.json(
@@ -61,7 +60,6 @@ export async function PUT(req: Request) {
                 description,
                 services,
                 commune: commune || null,
-                codePostal: codePostal || null,
             },
         });
 

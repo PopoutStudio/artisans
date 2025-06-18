@@ -20,7 +20,6 @@ export default async function ProfilePage() {
             description: true,
             services: true,
             commune: true,
-            codePostal: true,
         },
     });
 
