@@ -33,9 +33,6 @@ Objectif: Permettre aux clients de trouver des artisans
   - [x] Filtrage par commune fonctionnel
   - [x] Communes restreintes aux communes de Martinique
   - [x] Validation côté serveur des communes
-  - [ ] Pagination des résultats
-  - [ ] Filtres supplémentaires (code postal, rayon)
-  - [ ] Tri des résultats
 
 ## MVP 3: Contact Initial (2-3 jours)
 Objectif: Permettre le premier contact entre client et artisan
@@ -82,6 +79,13 @@ Objectif: Permettre aux artisans de débloquer plus de leads
   - [ ] Un niveau d'abonnement
   - [ ] Paiement simple
   - [ ] Déblocage leads
+
+## MVP 7: Fonctions dépriorisées
+- [x] Améliorations possibles
+  - [ ] Pagination des résultats
+  - [ ] Filtres supplémentaires (code postal, rayon)
+  - [ ] Tri des résultats
+
 
 ## Notes Techniques (MVP)
 - Stack: Next.js 14+ (App Router) ✓
