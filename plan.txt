@@ -135,4 +135,9 @@ MVP 2 terminé :
 - `src/app/api/profile/route.ts` - API de profil mise à jour avec validation des services et communes côté serveur (code postal supprimé)
 - `src/app/profile/page.tsx` - Page profil mise à jour pour inclure les données de localisation (code postal supprimé)
 - `src/app/search/page.tsx` - Page de recherche corrigée pour compatibilité Next.js 15 (await searchParams)
-- `src/app/artisan/[id]/page.tsx` - Page détail artisan corrigée pour compatibilité Next.js 15 (await params) 
+- `src/app/artisan/[id]/page.tsx` - Page détail artisan corrigée pour compatibilité Next.js 15 (await params)
+- `src/components/auth/ClientAuthForm.tsx` - Formulaire d'inscription spécifique pour les clients
+- `src/app/auth/register-client/page.tsx` - Page d'inscription client avec UX améliorée
+- `src/app/api/auth/register-client/route.ts` - API endpoint pour l'inscription des clients
+- `src/components/layout/Navbar.tsx` - Navigation mise à jour avec menu déroulant d'inscription et affichage du rôle utilisateur
+- `src/app/page.tsx` - Page d'accueil mise à jour avec sections distinctes pour clients et artisans 
