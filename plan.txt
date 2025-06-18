@@ -25,7 +25,10 @@ Objectif: Permettre aux clients de trouver des artisans
 - [x] Fonctionnalités
   - [x] Recherche basique (filtre service + commune)
   - [x] Affichage liste résultats
-- [ ] Améliorations possibles
+- [x] Améliorations possibles
+  - [x] Services restreints aux valeurs prédéfinies
+  - [x] Validation côté serveur des services
+  - [x] Interface utilisateur améliorée (checkboxes)
   - [ ] Pagination des résultats
   - [ ] Filtres supplémentaires (code postal, rayon)
   - [ ] Tri des résultats
@@ -114,4 +117,11 @@ MVP 2 terminé :
 - ✓ CRUD profil artisan
 - ✓ Recherche d'artisans
 - ✓ Affichage détaillé des profils
-- ⏳ MVP 3 à démarrer (système de contact) 
+- ✓ Services restreints aux valeurs prédéfinies
+- ⏳ MVP 3 à démarrer (système de contact)
+
+## Fichiers Pertinents
+- `src/lib/constants.ts` - Fichier de constantes partagées contenant la liste des services prédéfinis
+- `src/components/profile/ProfileForm.tsx` - Formulaire de profil mis à jour avec sélection de services par checkboxes
+- `src/components/search/SearchForm.tsx` - Formulaire de recherche mis à jour pour utiliser les constantes partagées
+- `src/app/api/profile/route.ts` - API de profil mise à jour avec validation des services côté serveur 
