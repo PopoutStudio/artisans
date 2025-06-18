@@ -31,21 +31,21 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifier que le destinataire existe et est un artisan
-        const receiver = await prisma.user.findUnique({
+        // Vérifier que l'artisan existe et récupérer son userId
+        const artisan = await prisma.artisan.findUnique({
             where: { id: receiverId },
-            include: { artisan: true },
+            include: { user: true },
         });
 
-        if (!receiver || !receiver.artisan) {
+        if (!artisan) {
             return NextResponse.json(
-                { message: 'Destinataire non trouvé' },
+                { message: 'Artisan non trouvé' },
                 { status: 404 },
             );
         }
 
         // Vérifier que l'expéditeur n'essaie pas de s'envoyer un message à lui-même
-        if (session.user.id === receiverId) {
+        if (session.user.id === artisan.userId) {
             return NextResponse.json(
                 {
                     message:
@@ -55,11 +55,11 @@ export async function POST(req: Request) {
             );
         }
 
-        // Créer le message
+        // Créer le message en utilisant l'userId de l'artisan
         const message = await prisma.message.create({
             data: {
                 senderId: session.user.id,
-                receiverId,
+                receiverId: artisan.userId,
                 content: content.trim(),
             },
         });

@@ -3,12 +3,39 @@
 import { signOut, useSession } from 'next-auth/react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
+import { useEffect, useState } from 'react';
 
 export function Navbar() {
     const { data: session, status } = useSession();
     const pathname = usePathname();
+    const [unreadCount, setUnreadCount] = useState(0);
 
     const isActive = (path: string) => pathname === path;
+
+    // Récupérer le nombre de messages non lus pour les artisans
+    useEffect(() => {
+        if (session?.user?.role === 'ARTISAN') {
+            const fetchUnreadCount = async () => {
+                try {
+                    const response = await fetch('/api/messages/unread-count');
+                    if (response.ok) {
+                        const data = await response.json();
+                        setUnreadCount(data.count);
+                    }
+                } catch (error) {
+                    console.error(
+                        'Erreur lors de la récupération du nombre de messages non lus:',
+                        error,
+                    );
+                }
+            };
+
+            fetchUnreadCount();
+            // Rafraîchir toutes les 30 secondes
+            const interval = setInterval(fetchUnreadCount, 30000);
+            return () => clearInterval(interval);
+        }
+    }, [session?.user?.role]);
 
     return (
         <nav className='bg-white shadow-lg'>
@@ -37,16 +64,35 @@ export function Navbar() {
                             {session?.user && (
                                 <>
                                     {session.user.role === 'ARTISAN' && (
-                                        <Link
-                                            href='/profile'
-                                            className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
-                                                isActive('/profile')
-                                                    ? 'border-blue-500 text-gray-900'
-                                                    : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
-                                            }`}
-                                        >
-                                            Mon Profil
-                                        </Link>
+                                        <>
+                                            <Link
+                                                href='/profile'
+                                                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium ${
+                                                    isActive('/profile')
+                                                        ? 'border-blue-500 text-gray-900'
+                                                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                                                }`}
+                                            >
+                                                Mon Profil
+                                            </Link>
+                                            <Link
+                                                href='/messages'
+                                                className={`inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium relative ${
+                                                    isActive('/messages')
+                                                        ? 'border-blue-500 text-gray-900'
+                                                        : 'border-transparent text-gray-500 hover:border-gray-300 hover:text-gray-700'
+                                                }`}
+                                            >
+                                                Messages
+                                                {unreadCount > 0 && (
+                                                    <span className='absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center'>
+                                                        {unreadCount > 9
+                                                            ? '9+'
+                                                            : unreadCount}
+                                                    </span>
+                                                )}
+                                            </Link>
+                                        </>
                                     )}
                                     {session.user.role === 'CLIENT' && (
                                         <Link

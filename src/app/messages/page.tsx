@@ -4,6 +4,22 @@ import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
 import { authOptions } from '../api/auth/[...nextauth]/route';
 
+interface MessageWithRelations {
+    id: string;
+    content: string;
+    isRead: boolean;
+    createdAt: Date;
+    sender?: {
+        email: string;
+    };
+    receiver?: {
+        email: string;
+        artisan?: {
+            name: string;
+        };
+    };
+}
+
 export default async function MessagesPage() {
     const session = await getServerSession(authOptions);
 
@@ -11,14 +27,12 @@ export default async function MessagesPage() {
         redirect('/auth/login');
     }
 
-    // Récupérer les messages selon le rôle de l'utilisateur
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    let messages: any[] = [];
+    // Récupérer tous les messages de l'utilisateur (envoyés et reçus)
+    let messages: MessageWithRelations[] = [];
 
     if (session.user.role === 'CLIENT') {
-        // Les clients voient les messages qu'ils ont envoyés
-
-        messages = (await prisma.message.findMany({
+        // Les clients voient tous leurs messages (envoyés et reçus)
+        const sentMessages = (await prisma.message.findMany({
             where: {
                 senderId: session.user.id,
             },
@@ -32,11 +46,45 @@ export default async function MessagesPage() {
             orderBy: {
                 createdAt: 'desc',
             },
-        })) as any[];
-    } else if (session.user.role === 'ARTISAN') {
-        // Les artisans voient les messages qu'ils ont reçus
+        })) as MessageWithRelations[];
 
-        messages = (await prisma.message.findMany({
+        const receivedMessages = (await prisma.message.findMany({
+            where: {
+                receiverId: session.user.id,
+            },
+            include: {
+                sender: {
+                    include: {
+                        artisan: true,
+                    },
+                },
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        })) as MessageWithRelations[];
+
+        // Combiner et trier par date
+        messages = [...sentMessages, ...receivedMessages].sort(
+            (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime(),
+        );
+    } else if (session.user.role === 'ARTISAN') {
+        // Les artisans voient tous leurs messages (envoyés et reçus)
+        const sentMessages = (await prisma.message.findMany({
+            where: {
+                senderId: session.user.id,
+            },
+            include: {
+                receiver: true,
+            },
+            orderBy: {
+                createdAt: 'desc',
+            },
+        })) as MessageWithRelations[];
+
+        const receivedMessages = (await prisma.message.findMany({
             where: {
                 receiverId: session.user.id,
             },
@@ -46,7 +94,14 @@ export default async function MessagesPage() {
             orderBy: {
                 createdAt: 'desc',
             },
-        })) as any[];
+        })) as MessageWithRelations[];
+
+        // Combiner et trier par date
+        messages = [...sentMessages, ...receivedMessages].sort(
+            (a, b) =>
+                new Date(b.createdAt).getTime() -
+                new Date(a.createdAt).getTime(),
+        );
     }
 
     return (
@@ -55,12 +110,12 @@ export default async function MessagesPage() {
                 <div className='mb-8'>
                     <h1 className='text-3xl font-bold text-gray-900'>
                         {session.user.role === 'CLIENT'
-                            ? 'Mes messages envoyés'
+                            ? 'Mes conversations'
                             : 'Messages reçus'}
                     </h1>
                     <p className='text-gray-600 mt-2'>
                         {session.user.role === 'CLIENT'
-                            ? 'Historique de vos messages envoyés aux artisans'
+                            ? 'Historique de vos échanges avec les artisans'
                             : 'Messages reçus de clients potentiels'}
                     </p>
                 </div>
