@@ -15,27 +15,41 @@ datasource db {
 }
 
 model User {
-  id            String    @id @default(cuid())
-  email         String    @unique
-  password      String
-  role          Role      @default(ARTISAN)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
-  artisan       Artisan?
+  id               String    @id @default(cuid())
+  email            String    @unique
+  password         String
+  role             Role      @default(ARTISAN)
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+  artisan          Artisan?
+  messagesSent     Message[] @relation("MessageSender")
+  messagesReceived Message[] @relation("MessageReceiver")
 }
 
 model Artisan {
-  id          String    @id @default(cuid())
-  userId      String    @unique
-  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id          String   @id @default(cuid())
+  userId      String   @unique
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   name        String
   description String?
-  services    String[]  // Liste simple des services pour MVP 1
-  commune     String?   // Commune d'intervention
-  codePostal  String?   // Code postal
-  rayon       Int       @default(10) // Rayon d'intervention en km
-  createdAt   DateTime  @default(now())
-  updatedAt   DateTime  @updatedAt
+  services    String[] // Liste simple des services pour MVP 1
+  commune     String? // Commune d'intervention
+  codePostal  String? // Code postal
+  rayon       Int      @default(10) // Rayon d'intervention en km
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+}
+
+model Message {
+  id         String   @id @default(cuid())
+  senderId   String
+  receiverId String
+  content    String
+  isRead     Boolean  @default(false)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  sender     User     @relation("MessageSender", fields: [senderId], references: [id], onDelete: Cascade)
+  receiver   User     @relation("MessageReceiver", fields: [receiverId], references: [id], onDelete: Cascade)
 }
 
 enum Role {

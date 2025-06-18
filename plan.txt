@@ -25,23 +25,30 @@ Objectif: Permettre aux clients de trouver des artisans
 - [x] Fonctionnalités
   - [x] Recherche basique (filtre service + commune)
   - [x] Affichage liste résultats
-- [ ] Améliorations possibles
-  - [ ] Pagination des résultats
-  - [ ] Filtres supplémentaires (code postal, rayon)
-  - [ ] Tri des résultats
+- [x] Améliorations possibles
+  - [x] Services restreints aux valeurs prédéfinies
+  - [x] Validation côté serveur des services
+  - [x] Interface utilisateur améliorée (checkboxes)
+  - [x] Ajout commune et code postal au profil artisan
+  - [x] Filtrage par commune fonctionnel
+  - [x] Communes restreintes aux communes de Martinique
+  - [x] Validation côté serveur des communes
 
 ## MVP 3: Contact Initial (2-3 jours)
 Objectif: Permettre le premier contact entre client et artisan
-- [ ] Extension des modèles
-  - [ ] Message (expéditeur, destinataire, contenu)
-  - [ ] Client (email, password)
-- [ ] Pages
-  - [ ] Inscription client
-  - [ ] Formulaire de contact
-  - [ ] Boîte de réception basique
-- [ ] Fonctionnalités
-  - [ ] Envoi message simple
-  - [ ] Affichage messages reçus
+- [x] Extension des modèles
+  - [x] Message (expéditeur, destinataire, contenu)
+  - [x] Client (email, password)
+- [x] Pages
+  - [x] Inscription client
+  - [x] Formulaire de contact
+  - [x] Boîte de réception basique
+- [x] Fonctionnalités
+  - [x] Envoi message simple
+  - [x] Affichage messages reçus
+  - [x] Marquage automatique des messages comme lus
+  - [x] Indicateur de messages non lus dans la navigation
+  - [x] API pour compter les messages non lus
 
 ## MVP 4: Anonymisation Basique (2 jours)
 Objectif: Protéger les coordonnées des artisans
@@ -76,6 +83,13 @@ Objectif: Permettre aux artisans de débloquer plus de leads
   - [ ] Paiement simple
   - [ ] Déblocage leads
 
+## MVP 7: Fonctions dépriorisées
+- [x] Améliorations possibles
+  - [ ] Pagination des résultats
+  - [ ] Filtres supplémentaires (code postal, rayon)
+  - [ ] Tri des résultats
+
+
 ## Notes Techniques (MVP)
 - Stack: Next.js 14+ (App Router) ✓
 - TypeScript ✓
@@ -88,7 +102,7 @@ Objectif: Permettre aux artisans de débloquer plus de leads
 ## Critères de Succès MVP
 - [x] Un artisan peut créer son profil
 - [x] Un client peut trouver un artisan
-- [ ] Un client peut contacter un artisan
+- [x] Un client peut contacter un artisan
 - [ ] Un artisan peut gérer ses leads
 - [ ] Un artisan peut souscrire à un abonnement
 
@@ -108,10 +122,34 @@ Objectif: Permettre aux artisans de débloquer plus de leads
 - Support desktop-first ✓
 
 ## Statut Actuel
-MVP 2 terminé :
+MVP 3 terminé :
 - ✓ Configuration initiale complète
 - ✓ Authentification fonctionnelle
 - ✓ CRUD profil artisan
 - ✓ Recherche d'artisans
 - ✓ Affichage détaillé des profils
-- ⏳ MVP 3 à démarrer (système de contact) 
+- ✓ Services restreints aux valeurs prédéfinies
+- ✓ Système de contact complet
+- ✓ Messagerie entre clients et artisans
+- ✓ Boîte de réception avec indicateurs
+- ⏳ MVP 4 à démarrer (anonymisation)
+
+## Fichiers Pertinents
+- `src/lib/constants.ts` - Fichier de constantes partagées contenant la liste des services prédéfinis et des communes de Martinique
+- `src/components/profile/ProfileForm.tsx` - Formulaire de profil mis à jour avec sélection de services par checkboxes et dropdown pour communes de Martinique (code postal supprimé)
+- `src/components/search/SearchForm.tsx` - Formulaire de recherche mis à jour pour utiliser les constantes partagées et dropdown pour communes de Martinique
+- `src/app/api/profile/route.ts` - API de profil mise à jour avec validation des services et communes côté serveur (code postal supprimé)
+- `src/app/profile/page.tsx` - Page profil mise à jour pour inclure les données de localisation (code postal supprimé)
+- `src/app/search/page.tsx` - Page de recherche corrigée pour compatibilité Next.js 15 (await searchParams)
+- `src/app/artisan/[id]/page.tsx` - Page détail artisan corrigée pour compatibilité Next.js 15 (await params)
+- `src/components/auth/ClientAuthForm.tsx` - Formulaire d'inscription spécifique pour les clients
+- `src/app/auth/register-client/page.tsx` - Page d'inscription client avec UX améliorée
+- `src/app/api/auth/register-client/route.ts` - API endpoint pour l'inscription des clients
+- `src/components/layout/Navbar.tsx` - Navigation mise à jour avec menu déroulant d'inscription et affichage du rôle utilisateur
+- `src/app/page.tsx` - Page d'accueil mise à jour avec sections distinctes pour clients et artisans
+- `src/components/contact/ContactForm.tsx` - Formulaire de contact pour les clients
+- `src/app/api/messages/route.ts` - API pour l'envoi de messages
+- `src/app/messages/page.tsx` - Page de boîte de réception avec affichage des messages selon le rôle
+- `src/components/messages/MessagesList.tsx` - Composant d'affichage des messages avec marquage automatique comme lu
+- `src/app/api/messages/[id]/read/route.ts` - API pour marquer un message comme lu
+- `src/app/api/messages/unread-count/route.ts` - API pour compter les messages non lus 

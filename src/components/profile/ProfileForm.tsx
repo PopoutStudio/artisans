@@ -1,145 +1,183 @@
 'use client';
 
+import { COMMUNES, SERVICES } from '@/lib/constants';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 
 interface ProfileFormProps {
-  initialData: {
-    name: string;
-    description: string | null;
-    services: string[];
-  };
+    initialData: {
+        name: string;
+        description: string | null;
+        services: string[];
+        commune: string | null;
+    };
 }
 
 export function ProfileForm({ initialData }: ProfileFormProps) {
-  const router = useRouter();
-  const [error, setError] = useState<string>('');
-  const [loading, setLoading] = useState(false);
-  const [services, setServices] = useState<string[]>(initialData.services);
-  const [newService, setNewService] = useState('');
+    const router = useRouter();
+    const [error, setError] = useState<string>('');
+    const [loading, setLoading] = useState(false);
+    const [services, setServices] = useState<string[]>(initialData.services);
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setError('');
-    setLoading(true);
+    const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault();
+        setError('');
+        setLoading(true);
 
-    const formData = new FormData(e.currentTarget);
-    const data = {
-      name: formData.get('name') as string,
-      description: formData.get('description') as string,
-      services,
+        const formData = new FormData(e.currentTarget);
+        const data = {
+            name: formData.get('name') as string,
+            description: formData.get('description') as string,
+            services,
+            commune: formData.get('commune') as string,
+        };
+
+        try {
+            const response = await fetch('/api/profile', {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data),
+            });
+
+            if (!response.ok) {
+                const data = await response.json();
+                throw new Error(data.message || 'Une erreur est survenue');
+            }
+
+            router.refresh();
+        } catch (err) {
+            setError(
+                err instanceof Error ? err.message : 'Une erreur est survenue',
+            );
+        } finally {
+            setLoading(false);
+        }
     };
 
-    try {
-      const response = await fetch('/api/profile', {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(data),
-      });
+    const toggleService = (service: string) => {
+        if (services.includes(service)) {
+            setServices(services.filter((s) => s !== service));
+        } else {
+            setServices([...services, service]);
+        }
+    };
 
-      if (!response.ok) {
-        const data = await response.json();
-        throw new Error(data.message || 'Une erreur est survenue');
-      }
+    return (
+        <form onSubmit={handleSubmit} className='space-y-6 w-full max-w-2xl'>
+            <div>
+                <label
+                    htmlFor='name'
+                    className='block text-sm font-medium text-gray-700'
+                >
+                    Nom
+                </label>
+                <input
+                    type='text'
+                    name='name'
+                    id='name'
+                    defaultValue={initialData.name}
+                    required
+                    className='mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500'
+                />
+            </div>
 
-      router.refresh();
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Une erreur est survenue');
-    } finally {
-      setLoading(false);
-    }
-  };
+            <div>
+                <label
+                    htmlFor='description'
+                    className='block text-sm font-medium text-gray-700'
+                >
+                    Description
+                </label>
+                <textarea
+                    name='description'
+                    id='description'
+                    rows={4}
+                    defaultValue={initialData.description || ''}
+                    className='mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500'
+                />
+            </div>
 
-  const addService = () => {
-    if (newService.trim() && !services.includes(newService.trim())) {
-      setServices([...services, newService.trim()]);
-      setNewService('');
-    }
-  };
+            <div>
+                <label
+                    htmlFor='commune'
+                    className='block text-sm font-medium text-gray-700'
+                >
+                    Commune
+                </label>
+                <select
+                    name='commune'
+                    id='commune'
+                    defaultValue={initialData.commune || ''}
+                    className='mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500'
+                >
+                    <option value=''>Sélectionnez une commune</option>
+                    {COMMUNES.map((commune) => (
+                        <option key={commune} value={commune}>
+                            {commune}
+                        </option>
+                    ))}
+                </select>
+            </div>
 
-  const removeService = (serviceToRemove: string) => {
-    setServices(services.filter(service => service !== serviceToRemove));
-  };
+            <div>
+                <label className='block text-sm font-medium text-gray-700 mb-2'>
+                    Services proposés
+                </label>
+                <div className='grid grid-cols-2 gap-2'>
+                    {SERVICES.map((service) => (
+                        <label
+                            key={service}
+                            className='flex items-center space-x-2 cursor-pointer'
+                        >
+                            <input
+                                type='checkbox'
+                                checked={services.includes(service)}
+                                onChange={() => toggleService(service)}
+                                className='rounded border-gray-300 text-blue-600 focus:ring-blue-500'
+                            />
+                            <span className='text-sm text-gray-700'>
+                                {service}
+                            </span>
+                        </label>
+                    ))}
+                </div>
+                {services.length > 0 && (
+                    <div className='mt-3'>
+                        <p className='text-sm text-gray-600 mb-2'>
+                            Services sélectionnés :
+                        </p>
+                        <div className='flex flex-wrap gap-2'>
+                            {services.map((service) => (
+                                <span
+                                    key={service}
+                                    className='inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800'
+                                >
+                                    {service}
+                                    <button
+                                        type='button'
+                                        onClick={() => toggleService(service)}
+                                        className='ml-1 text-blue-600 hover:text-blue-800'
+                                    >
+                                        ×
+                                    </button>
+                                </span>
+                            ))}
+                        </div>
+                    </div>
+                )}
+            </div>
 
-  return (
-    <form onSubmit={handleSubmit} className="space-y-6 w-full max-w-2xl">
-      <div>
-        <label htmlFor="name" className="block text-sm font-medium text-gray-700">
-          Nom
-        </label>
-        <input
-          type="text"
-          name="name"
-          id="name"
-          defaultValue={initialData.name}
-          required
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-        />
-      </div>
+            {error && <div className='text-red-600 text-sm'>{error}</div>}
 
-      <div>
-        <label htmlFor="description" className="block text-sm font-medium text-gray-700">
-          Description
-        </label>
-        <textarea
-          name="description"
-          id="description"
-          rows={4}
-          defaultValue={initialData.description || ''}
-          className="mt-1 block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-        />
-      </div>
-
-      <div>
-        <label className="block text-sm font-medium text-gray-700">
-          Services
-        </label>
-        <div className="mt-1 flex gap-2">
-          <input
-            type="text"
-            value={newService}
-            onChange={(e) => setNewService(e.target.value)}
-            placeholder="Ajouter un service"
-            className="block w-full rounded-md border border-gray-300 px-3 py-2 shadow-sm focus:border-blue-500 focus:outline-none focus:ring-blue-500"
-          />
-          <button
-            type="button"
-            onClick={addService}
-            className="rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
-          >
-            Ajouter
-          </button>
-        </div>
-        <div className="mt-2 flex flex-wrap gap-2">
-          {services.map((service) => (
-            <span
-              key={service}
-              className="inline-flex items-center gap-1 rounded-full bg-blue-100 px-3 py-1 text-sm font-medium text-blue-800"
+            <button
+                type='submit'
+                disabled={loading}
+                className='w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50'
             >
-              {service}
-              <button
-                type="button"
-                onClick={() => removeService(service)}
-                className="ml-1 text-blue-600 hover:text-blue-800"
-              >
-                ×
-              </button>
-            </span>
-          ))}
-        </div>
-      </div>
-
-      {error && (
-        <div className="text-red-600 text-sm">{error}</div>
-      )}
-
-      <button
-        type="submit"
-        disabled={loading}
-        className="w-full rounded-md bg-blue-600 px-4 py-2 text-white hover:bg-blue-700 disabled:opacity-50"
-      >
-        {loading ? 'Enregistrement...' : 'Enregistrer les modifications'}
-      </button>
-    </form>
-  );
-} 
+                {loading
+                    ? 'Enregistrement...'
+                    : 'Enregistrer les modifications'}
+            </button>
+        </form>
+    );
+}

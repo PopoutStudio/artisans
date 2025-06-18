@@ -1,0 +1,50 @@
+export const SERVICES = [
+    'Plomberie',
+    'Électricité',
+    'Maçonnerie',
+    'Peinture',
+    'Menuiserie',
+    'Jardinage',
+    'Carrelage',
+    'Chauffage',
+    'Toiture',
+    'Isolation',
+] as const;
+
+export type Service = (typeof SERVICES)[number];
+
+export const COMMUNES = [
+    'Fort-de-France',
+    'Le Lamentin',
+    'Le Robert',
+    'Sainte-Marie',
+    'Le François',
+    'Ducos',
+    'Sainte-Anne',
+    'Le Marin',
+    'Rivière-Pilote',
+    'Rivière-Salée',
+    'Les Trois-Îlets',
+    'Le Diamant',
+    "Les Anses-d'Arlet",
+    'Le Carbet',
+    'Saint-Pierre',
+    'Le Morne-Rouge',
+    'Basse-Pointe',
+    'Macouba',
+    "Grand'Rivière",
+    'Le Prêcheur',
+    'Le Lorrain',
+    'Le Marigot',
+    'Sainte-Luce',
+    'Le Vauclin',
+    'Le Gros-Morne',
+    'La Trinité',
+    'Case-Pilote',
+    'Bellefontaine',
+    'Schœlcher',
+    'Fonds-Saint-Denis',
+    'Saint-Joseph',
+] as const;
+
+export type Commune = (typeof COMMUNES)[number];
