@@ -1,4 +1,4 @@
-import { MessagesList } from '@/components/messages/MessagesList';
+import { ChatConversation } from '@/components/messages/ChatConversation';
 import { prisma } from '@/lib/prisma';
 import { getServerSession } from 'next-auth';
 import { redirect } from 'next/navigation';
@@ -12,17 +12,29 @@ interface MessageWithRelations {
     senderId: string;
     receiverId: string;
     sender?: {
+        id: string;
         email: string;
         artisan?: {
             name: string;
         };
     };
     receiver?: {
+        id: string;
         email: string;
         artisan?: {
             name: string;
         };
     };
+}
+
+interface Conversation {
+    id: string;
+    participantId: string;
+    participantName: string;
+    participantEmail: string;
+    lastMessage: Date;
+    unreadCount: number;
+    messages: MessageWithRelations[];
 }
 
 export default async function MessagesPage() {
@@ -49,7 +61,7 @@ export default async function MessagesPage() {
                 },
             },
             orderBy: {
-                createdAt: 'desc',
+                createdAt: 'asc',
             },
         })) as MessageWithRelations[];
 
@@ -65,15 +77,15 @@ export default async function MessagesPage() {
                 },
             },
             orderBy: {
-                createdAt: 'desc',
+                createdAt: 'asc',
             },
         })) as MessageWithRelations[];
 
         // Combiner et trier par date
         messages = [...sentMessages, ...receivedMessages].sort(
             (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime(),
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime(),
         );
     } else if (session.user.role === 'ARTISAN') {
         // Les artisans voient tous leurs messages (envoyés et reçus)
@@ -85,7 +97,7 @@ export default async function MessagesPage() {
                 receiver: true,
             },
             orderBy: {
-                createdAt: 'desc',
+                createdAt: 'asc',
             },
         })) as MessageWithRelations[];
 
@@ -97,17 +109,58 @@ export default async function MessagesPage() {
                 sender: true,
             },
             orderBy: {
-                createdAt: 'desc',
+                createdAt: 'asc',
             },
         })) as MessageWithRelations[];
 
         // Combiner et trier par date
         messages = [...sentMessages, ...receivedMessages].sort(
             (a, b) =>
-                new Date(b.createdAt).getTime() -
-                new Date(a.createdAt).getTime(),
+                new Date(a.createdAt).getTime() -
+                new Date(b.createdAt).getTime(),
         );
     }
+
+    // Regrouper les messages par conversation
+    const conversations = new Map<string, Conversation>();
+
+    messages.forEach((message) => {
+        const isSentByMe = message.senderId === session.user.id;
+        const otherParticipantId = isSentByMe ? message.receiverId! : message.senderId;
+        const otherParticipant = isSentByMe ? message.receiver! : message.sender!;
+        
+        const conversationId = otherParticipantId;
+        
+        if (!conversations.has(conversationId)) {
+            conversations.set(conversationId, {
+                id: conversationId,
+                participantId: otherParticipantId,
+                participantName: session.user.role === 'CLIENT' 
+                    ? (otherParticipant.artisan?.name || otherParticipant.email)
+                    : otherParticipant.email,
+                participantEmail: otherParticipant.email,
+                lastMessage: message.createdAt,
+                unreadCount: 0,
+                messages: [],
+            });
+        }
+
+        const conversation = conversations.get(conversationId)!;
+        conversation.messages.push(message);
+        
+        if (message.createdAt > conversation.lastMessage) {
+            conversation.lastMessage = message.createdAt;
+        }
+        
+        if (!message.isRead && message.receiverId === session.user.id) {
+            conversation.unreadCount++;
+        }
+    });
+
+    // Convertir en tableau et trier par date du dernier message
+    const conversationsList = Array.from(conversations.values()).sort(
+        (a, b) => new Date(b.lastMessage).getTime() - new Date(a.lastMessage).getTime()
+    );
 
     return (
         <div className='container mx-auto px-4 py-8'>
@@ -125,10 +178,32 @@ export default async function MessagesPage() {
                     </p>
                 </div>
 
-                <MessagesList
-                    messages={messages}
-                    userRole={session.user.role}
-                />
+                {conversationsList.length === 0 ? (
+                    <div className='text-center py-12'>
+                        <div className='text-gray-400 text-6xl mb-4'>📭</div>
+                        <h3 className='text-lg font-semibold text-gray-900 mb-2'>
+                            {session.user.role === 'CLIENT'
+                                ? 'Aucune conversation'
+                                : 'Aucun message reçu'}
+                        </h3>
+                        <p className='text-gray-600'>
+                            {session.user.role === 'CLIENT'
+                                ? "Vous n'avez pas encore échangé avec des artisans."
+                                : "Vous n'avez pas encore reçu de messages de clients."}
+                        </p>
+                    </div>
+                ) : (
+                    <div className='space-y-6'>
+                        {conversationsList.map((conversation) => (
+                            <ChatConversation
+                                key={conversation.id}
+                                conversation={conversation}
+                                userRole={session.user.role}
+                                currentUserId={session.user.id}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
