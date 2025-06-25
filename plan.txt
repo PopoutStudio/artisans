@@ -51,13 +51,7 @@ Objectif: Permettre le premier contact entre client et artisan
   - [x] API pour compter les messages non lus
   - [x] Afficher les messages regroupés par artisan / client
 
-## MVP 4: Anonymisation Basique (2 jours)
-Objectif: Protéger les coordonnées des artisans
-- [ ] Extension des modèles
-  - [ ] Ajout coordonnées masquées
-- [ ] Fonctionnalités
-  - [ ] Masquage email/téléphone
-  - [ ] Système de "dévoilement" après X messages
+## MVP4 --> Removed because useless...
 
 ## MVP 5: Système de Leads (2-3 jours)
 Objectif: Gérer les contacts et limiter l'accès
