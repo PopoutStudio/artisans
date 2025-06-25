@@ -14,14 +14,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifier que l'utilisateur est un client
-        if (session.user.role !== 'CLIENT') {
-            return NextResponse.json(
-                { message: 'Seuls les clients peuvent envoyer des messages' },
-                { status: 403 },
-            );
-        }
-
         const { receiverId, content } = await req.json();
 
         if (!receiverId || !content) {
@@ -31,21 +23,8 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifier que l'artisan existe et récupérer son userId
-        const artisan = await prisma.artisan.findUnique({
-            where: { id: receiverId },
-            include: { user: true },
-        });
-
-        if (!artisan) {
-            return NextResponse.json(
-                { message: 'Artisan non trouvé' },
-                { status: 404 },
-            );
-        }
-
         // Vérifier que l'expéditeur n'essaie pas de s'envoyer un message à lui-même
-        if (session.user.id === artisan.userId) {
+        if (session.user.id === receiverId) {
             return NextResponse.json(
                 {
                     message:
@@ -55,11 +34,23 @@ export async function POST(req: Request) {
             );
         }
 
-        // Créer le message en utilisant l'userId de l'artisan
+        // Vérifier que le destinataire existe
+        const receiver = await prisma.user.findUnique({
+            where: { id: receiverId },
+        });
+
+        if (!receiver) {
+            return NextResponse.json(
+                { message: 'Destinataire non trouvé' },
+                { status: 404 },
+            );
+        }
+
+        // Créer le message
         const message = await prisma.message.create({
             data: {
                 senderId: session.user.id,
-                receiverId: artisan.userId,
+                receiverId: receiverId,
                 content: content.trim(),
             },
         });

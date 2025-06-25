@@ -49,6 +49,7 @@ Objectif: Permettre le premier contact entre client et artisan
   - [x] Marquage automatique des messages comme lus
   - [x] Indicateur de messages non lus dans la navigation
   - [x] API pour compter les messages non lus
+  - [x] Afficher les messages regroupés par artisan / client
 
 ## MVP 4: Anonymisation Basique (2 jours)
 Objectif: Protéger les coordonnées des artisans
